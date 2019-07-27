@@ -11,7 +11,21 @@ pageTitle: string ='Product List ';
 imageWidth: number = 50;
 imageMargin: number = 2;
 showImage: boolean = false;
-listFilter: string = 'cart';
+
+_listStrFilter: string
+
+public get listStrFilter() : string {
+  return this._listStrFilter;
+}
+
+public set listStrFilter(value : string) {
+  this._listStrFilter = value;
+  this.filteredProducts =  this._listStrFilter ? this.performFilter(this.listStrFilter) : this.products;
+}
+
+
+filteredProducts : IProduct[];
+
 products: IProduct[] = [
     {
       "productId": 1,
@@ -64,6 +78,22 @@ products: IProduct[] = [
       "imageUrl": "https://openclipart.org/image/300px/svg_to_png/120337/xbox-controller_01.png"
     }
   ];
+
+  constructor () {
+    this.filteredProducts = this.products;
+    this.listStrFilter = 'cart';
+  }
+
+  onRatingClicked(message: string) : void{
+    this.pageTitle = 'Product List: ' + message;
+  }
+
+  performFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    
+    return  this.products.filter((product: IProduct) =>
+          product.productName.toLocaleLowerCase().indexOf(filterBy) !== -1);
+  }
 
   toggleImage(): void {
       this.showImage = !this.showImage; 
